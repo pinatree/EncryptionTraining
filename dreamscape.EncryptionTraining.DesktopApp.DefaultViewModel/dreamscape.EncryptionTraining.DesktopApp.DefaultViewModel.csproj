@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\dreamscape.EncryptionLibrary\dreamscape.EncryptionTraining.EncryptionLibrary.csproj" />
+    <ProjectReference Include="..\dreamscape.EncryptionTraining.DesktopApp.IViewModel\dreamscape.EncryptionTraining.DesktopApp.IViewModel.csproj" />
+  </ItemGroup>
+
+</Project>
