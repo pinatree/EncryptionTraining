@@ -1,9 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
-using dreamscape.EncryptionTraining.DesktopApp.IViewModel.Windows.Menu;
+
 using dreamscape.EncryptionTraining.DesktopApp.ViewModel.Helpers;
+using dreamscape.EncryptionTraining.DesktopApp.IViewModel.Windows.Menu;
 using dreamscape.EncryptionTraining.EncryptionLibrary.TranspositionEncryption;
+using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Cryptographer;
 
 namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
 {
@@ -66,13 +68,13 @@ namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
         {
             AvailableEncryptions = new ObservableCollection<EncryptionInfo>()
             {
-                new EncryptionInfo("1. Шифрование трнаспозиции",
+                new EncryptionInfo("1. Шифрование транспозиции",
                                     new TranspositionCryptographer(),
-                                    "Шифр перестановки — это метод симметричного шифрования, в котором элементы исходного открытого текста меняют местами.",
+                                    "Шифр перестановки (транспозиции) — это метод симметричного шифрования, в котором элементы исходного открытого текста меняют местами.",
                                     SetSelectedEncryption),
 
                 new EncryptionInfo("2. Шифр Виженера",
-                                    new TranspositionCryptographer(),
+                                    new VigenereCryptographer(),
                                     "",
                                     SetSelectedEncryption),
             };
