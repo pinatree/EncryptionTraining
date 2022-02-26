@@ -1,6 +1,6 @@
 ﻿namespace dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces
 {
-    interface ICryptographer
+    public interface ICryptographer
     {
         IEncryptor Encryptor { get; }
 

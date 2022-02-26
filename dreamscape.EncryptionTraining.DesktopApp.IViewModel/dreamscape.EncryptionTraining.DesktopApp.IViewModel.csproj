@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\dreamscape.EncryptionLibrary\dreamscape.EncryptionTraining.EncryptionLibrary.csproj" />
     <ProjectReference Include="..\dreamscape.EncryptionTraining.DesktopApp.ViewModel.Helpers\dreamscape.EncryptionTraining.DesktopApp.ViewModel.Helpers.csproj" />
   </ItemGroup>
 

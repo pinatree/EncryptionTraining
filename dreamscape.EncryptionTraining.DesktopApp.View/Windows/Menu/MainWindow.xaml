@@ -4,19 +4,134 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:dreamscape.EncryptionTraining.DesktopApp.View"
+        xmlns:conv="clr-namespace:dreamscape.EncryptionTraining.DesktopApp.View.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        <StackPanel.Resources>
-            <Style TargetType="Button">
-                <Setter Property="Background" Value="White" />
-                <Setter Property="Margin" Value="5" />
-            </Style>
-        </StackPanel.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="5*" />
+        </Grid.ColumnDefinitions>
 
-        <Button Command="{Binding GoToTranspositionEncryption, Mode=OneWay }">
-            Лабораторная работа № 1 - Шифр транспозиции.
-        </Button>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ItemsControl
+            Grid.Column="0"
+            ItemsSource="{Binding AvailableEncryptions, Mode=OneWay, FallbackValue=error}">
+                <ItemsControl.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="{Binding IsSelected, Converter={x:Static conv:SelectionToColorConverter.Instance }}" />
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="Padding" Value="5" />
+                    </Style>
+                </ItemsControl.Resources>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Vertical"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Command="{Binding OpenCommand, Mode=OneWay }">
+                            <TextBlock Text="{Binding Name, Mode=OneTime, FallbackValue=error}" />
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
-    </StackPanel>
+        <Grid
+            Grid.Column="1"
+            Visibility="{Binding SelectedEncryption, Converter={x:Static conv:NullVisibilityConverter.Instance}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.Row="0"
+                BorderThickness="0,0,0,1"
+                BorderBrush="LightGray"
+                Padding="5">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Grid.Column="1"
+                    Text="{ Binding SelectedEncryption.Name, Mode=OneWay, FallbackValue=error }"
+                    FontSize="24"/>
+            </Border>
+
+            <Border
+                Grid.Row="1"
+                BorderThickness="0,0,0,1"
+                BorderBrush="LightGray"
+                Padding="5"
+                Visibility="{Binding SelectedEncryption.AdditionalInfo, Converter={x:Static conv:EmptyStrToVisibilityConverter.Instance}}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Text="{ Binding SelectedEncryption.AdditionalInfo, Mode=OneWay, FallbackValue=error }"
+                    TextWrapping="Wrap"
+                    FontSize="16"/>
+            </Border>
+
+            <ScrollViewer
+                Grid.Row="2"
+                Padding="5"
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                
+                <StackPanel Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="16" />
+                        </Style>
+                    </StackPanel.Resources>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Исходный текст:" />
+                        <TextBox
+                            Height="50"
+                            TextWrapping="Wrap"
+                            Text="{Binding OriginalText,
+                            Mode=OneWayToSource,
+                            UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Ключ:" />
+                        <TextBox Text="{Binding Key, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Height="50" TextWrapping="Wrap" />
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <StackPanel.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="White" />
+                                <Setter Property="FontSize" Value="16" />
+                                <Setter Property="Margin" Value="5,10,15,5" />
+                                <Setter Property="Padding" Value="2" />
+                            </Style>
+                        </StackPanel.Resources>
+                        <Button Command="{Binding EncryptCommand}">
+                            Зашировать
+                        </Button>
+                        <Button Command="{Binding DecryptCommand}">
+                            Расшифровать
+                        </Button>
+                    </StackPanel>
+
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Обработанный текст:" />
+                        <TextBox
+                            IsReadOnly="True"
+                            Height="50"
+                            TextWrapping="Wrap"
+                            Text="{Binding ProcessedText, Mode=OneWay}"/>
+                    </StackPanel>
+                </StackPanel>
+                
+            </ScrollViewer>
+
+        </Grid>
+
+
+    </Grid>
 </Window>
