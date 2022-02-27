@@ -2,17 +2,21 @@
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Helpers
 {
-    public class VigenereSymbolsHelper
+    public class VigenereAlphabetHelper
     {
+        //First symbol of the alphabet
         public char StartPos { get; private set; }
 
+        //Last symbol of the alphabet
         public char EndPos { get; private set; }
 
+        //Alphabet length
         public int AlphabetLen { get; private set; }
 
+        //All symbols in the alphabet
         public char[] Alphabet { get; }
 
-        public VigenereSymbolsHelper(char startPos, char endPos)
+        public VigenereAlphabetHelper(char startPos, char endPos)
         {
             this.StartPos = startPos;
 
@@ -22,6 +26,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Hel
 
             Alphabet = new char[endPos - startPos + 1];
 
+            //Fill alphabet symbols
             for (int x = 0; x <= (endPos - startPos); x++)
             {
                 Alphabet[x] = Convert.ToChar(startPos + x);
@@ -68,6 +73,22 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Hel
         {
             int converted = Convert.ToInt32(check);
             return CheckSymbolBetween(converted);
+        }
+    
+        public char[][] GetAlphabetTable()
+        {
+            char[][] result = new char[Alphabet.Length][];
+
+            int insertPos = 0;
+            foreach(var symbol in Alphabet)
+            {
+                //Явный косяк!!! Так делать нельзя!!!
+                char[] alphabetFromPos = EncryptTableGenerator.GenerateAlphabetFromPos(symbol, this);
+                result[insertPos] = alphabetFromPos;
+                insertPos++;
+            }
+
+            return result;
         }
     }
 }

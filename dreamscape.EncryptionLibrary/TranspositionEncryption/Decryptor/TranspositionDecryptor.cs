@@ -11,6 +11,9 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.TranspositionEncryptio
     {
         public string Decrypt(string encrypted, string key)
         {
+            if (key.Length > encrypted.Length)
+                throw new ArgumentOutOfRangeException("Key length must be less thas string length");
+
             DataTable encryptedReplacedTabular = GetDecryptedTabular(encrypted, key.Length);
             DataTable restoredOrder = RestoreColumnsOrder(encryptedReplacedTabular, key);
             string decrypted = GetDecryptedString(restoredOrder);

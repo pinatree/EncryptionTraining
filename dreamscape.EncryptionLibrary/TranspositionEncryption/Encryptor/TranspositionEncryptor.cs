@@ -1,5 +1,6 @@
 ﻿using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
 using dreamscape.EncryptionTraining.EncryptionLibrary.TranspositionEncryption.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -10,6 +11,9 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.TranspositionEncryptio
     {
         public string Encrypt(string originalVal, string key)
         {
+            if (key.Length > originalVal.Length)
+                throw new ArgumentOutOfRangeException("Key length must be less thas string length");
+
             originalVal = SpacePlaceholder.GetSpaceFilled(originalVal, key.Length);
 
             DataTable tabularString = GetTabularString(originalVal, key.Length);

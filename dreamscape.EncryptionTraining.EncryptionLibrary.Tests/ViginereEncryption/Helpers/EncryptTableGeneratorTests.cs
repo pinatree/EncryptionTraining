@@ -1,10 +1,5 @@
 ﻿using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Helpers;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncryption.Helpers
 {
@@ -13,7 +8,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
         [Test]
         public void CheckAlphabetFromPosGeneration()
         {
-            VigenereSymbolsHelper vigenereSymbolsHelper = new VigenereSymbolsHelper('A', 'Z');
+            VigenereAlphabetHelper vigenereSymbolsHelper = new VigenereAlphabetHelper('A', 'Z');
 
             //from B
             var expect = "BCDEFGHIJKLMNOPQRSTUVWXYZA".ToCharArray();
@@ -34,7 +29,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
         [Test]
         public void CheckEncryptionTableGenerationWorksCorrectly()
         {
-            VigenereSymbolsHelper vigenereSymbolsHelper = new VigenereSymbolsHelper('A', 'Z');
+            VigenereAlphabetHelper vigenereSymbolsHelper = new VigenereAlphabetHelper('A', 'Z');
             //key 'BJY'
             char[][] except = new char[][]
             {

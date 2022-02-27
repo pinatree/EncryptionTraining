@@ -3,13 +3,13 @@ using NUnit.Framework;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncryption.Helpers
 {
-    public class VigenereSymbolsHelperTests
+    public class VigenereAlphabetHelperTests
     {
         [Test]
         public void CheckStrIsValidWorksCorrectly()
         {
             //----------EN language----------
-            VigenereSymbolsHelper checker = new VigenereSymbolsHelper('A', 'Z');
+            VigenereAlphabetHelper checker = new VigenereAlphabetHelper('A', 'Z');
 
             //Value string returns 'true'
             string toCheck = "AZFKDSFJDOSAFHNABDFASUHFDSHFDOSHFDS";
@@ -33,7 +33,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
 
 
             //----------RU language----------
-            checker = new VigenereSymbolsHelper('А', 'Я');
+            checker = new VigenereAlphabetHelper('А', 'Я');
 
             //Value string returns 'true'
             toCheck = "РАВЫАРВКРКЕВРВПАРКУПКУЫПРУЕПКУ";
@@ -59,7 +59,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
         [Test]
         public void GetSymbolWithOffsetWorksCorrectly()
         {
-            VigenereSymbolsHelper checker = new VigenereSymbolsHelper('A', 'Z');
+            VigenereAlphabetHelper checker = new VigenereAlphabetHelper('A', 'Z');
 
             //A + 1 = B
             Assert.AreEqual('B', checker.GetSymbolWithOffset('A', 1));

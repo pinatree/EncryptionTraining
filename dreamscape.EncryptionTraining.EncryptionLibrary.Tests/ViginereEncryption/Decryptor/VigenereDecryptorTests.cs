@@ -1,22 +1,16 @@
-﻿using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Encryptor;
+﻿using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Decryptor;
 using NUnit.Framework;
 using System;
 
-namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncryption.Encryptor
+namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncryption.Decryptor
 {
-    public class VigenereEncryptorTests
+    public class VigenereDecryptorTests
     {
-        private VigenereEncryptor _encryptor;
-
-        [SetUp]
-        public void SetUp()
-        {
-            _encryptor = new VigenereEncryptor();
-        }
-
         [Test]
-        public void CheckGetEncryptedString()
+        public void CheckGetDecryptedString()
         {
+            StreamVigenereDecryptor decryptor = new VigenereDecryptor('A', 'Z');
+
             //encryption table for key 'BJYHG'
             char[][] encryptionTable = new char[][]
             {
@@ -26,35 +20,37 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
                 "HIJKLMNOPQRSTUVWXYZABCDEFG".ToCharArray(),
                 "GHIJKLMNOPQRSTUVWXYZABCDEF".ToCharArray(),
             };
-            var result = _encryptor.GetEncryptedString("AAC", encryptionTable);
-            Assert.AreEqual("BJA", result);
+            var result = decryptor.GetDecryptedString("BJA", encryptionTable);
+            Assert.AreEqual("AAC", result);
         }
 
         [Test]
-        public void CheckEncryption()
+        public void CheckDecryption()
         {
-            var result = _encryptor.Encrypt("AAC", "BJYHG");
-            Assert.AreEqual("BJA", result);
+            StreamVigenereDecryptor decryptor = new VigenereDecryptor('A', 'Z');
+
+            var result = decryptor.Decrypt("BJA", "BJYHG");
+            Assert.AreEqual("AAC", result);
 
             //Empty string key => error
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    _encryptor.Encrypt("ASD", "");
+                    decryptor.Decrypt("ASD", "");
                 });
 
             //Null key => error
             Assert.Throws<ArgumentNullException>(
                 () =>
                 {
-                    _encryptor.Encrypt("ASD", null);
+                    decryptor.Decrypt("ASD", null);
                 });
 
             //Crazy key => error
             Assert.Throws<ArgumentException>(
                 () =>
                 {
-                    _encryptor.Encrypt("ASD", "123ва2");
+                    decryptor.Decrypt("ASD", "123ва2");
                 });
         }
     }

@@ -8,24 +8,38 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Dec
 {
     public class VigenereDecryptor : IDecryptor
     {
-        private VigenereSymbolsHelper _symbolsChecker;
+        private VigenereAlphabetHelper _symbolsChecker;
 
         public VigenereDecryptor(char alphabetStart = 'A', char alphabetEnd = 'Z')
         {
-            _symbolsChecker = new VigenereSymbolsHelper(alphabetStart, alphabetEnd);
+            _symbolsChecker = new VigenereAlphabetHelper(alphabetStart, alphabetEnd);
         }
 
         public string Decrypt(string encrypted, string key)
         {
-            string upperCase = VigenereStringConverter.SetToUpperCase(encrypted);
+            if ((key == null) || (key == string.Empty))
+                throw new ArgumentNullException("Key must be not null and not empty string");
 
+            //Check: all symbols of the key exists in alphabet
+            bool keyIsValid = _symbolsChecker.CheckStrIsValid(key);
+
+            //Original string contains incorrect symbols => error
+            if (keyIsValid == false)
+                throw new ArgumentException("The key contains characters that" +
+                    "are not in the alphabet. Be careful, a space is also a symbol.");
+
+            //Check: all symbols of original string exists in alphabet
             bool stringIsValid = _symbolsChecker.CheckStrIsValid(encrypted);
 
+            //Original string contains incorrect symbols => error
             if (stringIsValid == false)
-                throw new ArgumentException("Строка содержит недопустимые символы.");
+                throw new ArgumentException("The string contains characters that" +
+                    "are not in the alphabet.Be careful, a space is also a symbol.");
 
+            //Generate encryption table
             char[][] encryptTable = EncryptTableGenerator.GetEncryptionTable(key, _symbolsChecker);
 
+            //Decrypt a string with an encryption table
             string decrypt = GetDecryptedString(encrypted, encryptTable);
 
             return decrypt;
@@ -33,20 +47,22 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Dec
 
         public string GetDecryptedString(string original, char[][] encryptionTable)
         {
-            string result = "";
+            string decrypted = "";
 
-            //get key length
+            //get key length (equals encryption table rows count)
             int keyLength = encryptionTable.Count();
 
             //encrypt each symbol
             for (int x = 0; x < original.Length; x++)
             {
+                //encryption table row for this symbol
                 int currentRow = x % keyLength;
 
+                //get current symbol
                 char currentSymbol = original[x];
 
+                //Find encrypted character in encrypted string
                 int symbolPosInEncTable = 0;
-
                 foreach(var symbol in encryptionTable[currentRow])
                 {
                     if(symbol == currentSymbol)
@@ -56,11 +72,13 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Dec
                     symbolPosInEncTable++;
                 }
 
+                //Substitute a string from the original alphabet
                 char addSymbol = _symbolsChecker.Alphabet[symbolPosInEncTable];
-                result = result + addSymbol;
+
+                decrypted = decrypted + addSymbol;
             }
 
-            return result;
+            return decrypted;
         }
     }
 }

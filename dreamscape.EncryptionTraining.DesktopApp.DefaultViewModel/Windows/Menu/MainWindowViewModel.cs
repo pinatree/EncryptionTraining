@@ -6,6 +6,7 @@ using dreamscape.EncryptionTraining.DesktopApp.ViewModel.Helpers;
 using dreamscape.EncryptionTraining.DesktopApp.IViewModel.Windows.Menu;
 using dreamscape.EncryptionTraining.EncryptionLibrary.TranspositionEncryption;
 using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Cryptographer;
+using dreamscape.EncryptionTraining.EncryptionLibrary.StreamVigenereEncryption.Cryptographer;
 
 namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
 {
@@ -68,7 +69,7 @@ namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
         {
             AvailableEncryptions = new ObservableCollection<EncryptionInfo>()
             {
-                new EncryptionInfo("1. Шифрование транспозиции",
+                new EncryptionInfo("1. Шифр транспозиции",
                                     new TranspositionCryptographer(),
                                     "Шифр перестановки (транспозиции) — это метод симметричного шифрования, в котором элементы исходного открытого текста меняют местами.",
                                     SetSelectedEncryption),
@@ -76,6 +77,12 @@ namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
                 new EncryptionInfo("2. Шифр Виженера",
                                     new VigenereCryptographer(),
                                     "",
+                                    SetSelectedEncryption),
+
+                new EncryptionInfo("3. Поточный шифр Виженера",
+                                    new StreamVigenereCryptographer(),
+                                    "Поточный шифр— это симметричный шифр, в котором каждый символ открытого текста преобразуется в символ шифрованного текста в " +
+                                    "зависимости не только от используемого ключа, но и от его расположения в потоке открытого текста. ",
                                     SetSelectedEncryption),
             };
 

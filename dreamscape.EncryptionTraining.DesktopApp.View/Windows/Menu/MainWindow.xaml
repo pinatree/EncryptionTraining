@@ -87,17 +87,33 @@
                     </StackPanel.Resources>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Исходный текст:" />
-                        <TextBox
-                            Height="50"
-                            TextWrapping="Wrap"
-                            Text="{Binding OriginalText,
-                            Mode=OneWayToSource,
-                            UpdateSourceTrigger=PropertyChanged}"/>
+                        <Border
+                            BorderThickness="2"
+                            BorderBrush="LightGray"
+                            CornerRadius="5" Padding="2">
+                            <TextBox
+                                BorderThickness="0"
+                                Height="50"
+                                TextWrapping="Wrap"
+                                Text="{ Binding OriginalText,
+                                        Mode=OneWayToSource,
+                                        UpdateSourceTrigger=PropertyChanged }" />
+                        </Border>
                     </StackPanel>
 
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Ключ:" />
-                        <TextBox Text="{Binding Key, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" Height="50" TextWrapping="Wrap" />
+                        <Border
+                            BorderThickness="2"
+                            BorderBrush="LightGray"
+                            CornerRadius="5" Padding="2">
+                            <TextBox
+                                BorderThickness="0"
+                                Text="{ Binding Key,
+                                        Mode=OneWayToSource,
+                                        UpdateSourceTrigger=PropertyChanged }"
+                                Height="50" TextWrapping="Wrap" />
+                        </Border>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -120,6 +136,7 @@
 
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Обработанный текст:" />
+                        
                         <TextBox
                             IsReadOnly="True"
                             Height="50"

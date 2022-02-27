@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Helpers
 {
     public static class EncryptTableGenerator
     {
-        public static char[][] GetEncryptionTable(string key, VigenereSymbolsHelper helper)
+        public static char[][] GetEncryptionTable(string key, VigenereAlphabetHelper helper)
         {
             //output
             char[][] result = new char[key.Length][];
@@ -16,15 +12,20 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Hel
             //fill table
             for (int x = 0; x < key.Length; x++)
             {
-                char keySymbol = key[x];
-                char[] alphabetString = GenerateAlphabetFromPos(keySymbol, helper);
+                //current symbol
+                char currentSymbol = key[x];
+
+                //Get the alphabet starting with this character
+                char[] alphabetString = GenerateAlphabetFromPos(currentSymbol, helper);
+
+                //put it into result table
                 result[x] = alphabetString;
             }
 
             return result;
         }
 
-        public static char[] GenerateAlphabetFromPos(char firstSymbol, VigenereSymbolsHelper helper)
+        public static char[] GenerateAlphabetFromPos(char firstSymbol, VigenereAlphabetHelper helper)
         {
             //output array
             char[] result = new char[helper.AlphabetLen];
