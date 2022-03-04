@@ -9,7 +9,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
         [Test]
         public void CheckGetDecryptedString()
         {
-            StreamVigenereDecryptor decryptor = new VigenereDecryptor('A', 'Z');
+            VigenereDecryptor decryptor = new VigenereDecryptor('A', 'Z');
 
             //encryption table for key 'BJYHG'
             char[][] encryptionTable = new char[][]
@@ -27,7 +27,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.Tests.ViginereEncrypti
         [Test]
         public void CheckDecryption()
         {
-            StreamVigenereDecryptor decryptor = new VigenereDecryptor('A', 'Z');
+            VigenereDecryptor decryptor = new VigenereDecryptor('A', 'Z');
 
             var result = decryptor.Decrypt("BJA", "BJYHG");
             Assert.AreEqual("AAC", result);
