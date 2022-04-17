@@ -48,5 +48,28 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Hel
             return result;
         }
 
+        public static char[] GenerateAlphabetFromPosPlusOne(char firstSymbol, VigenereAlphabetHelper helper)
+        {
+            //output array
+            char[] result = new char[helper.AlphabetLen + 1];
+
+            //convert input char to integer
+            int firstSymbol_intVal = Convert.ToInt32(firstSymbol);
+
+            //new alphabet starts from input symbol
+            result[0] = firstSymbol;
+
+            //fill new alphabet
+            for (int x = 1; x <= helper.AlphabetLen; x++)
+            {
+                //get next symbol with offset
+                char symbolWithOffset = helper.GetSymbolWithOffset(firstSymbol, x);
+
+                result[x] = symbolWithOffset;
+            }
+
+            return result;
+        }
+
     }
 }

@@ -74,16 +74,27 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Hel
             int converted = Convert.ToInt32(check);
             return CheckSymbolBetween(converted);
         }
-    
+
+        //1 строка = заголовок
         public char[][] GetAlphabetTable()
         {
-            char[][] result = new char[Alphabet.Length][];
+            char[][] result = new char[Alphabet.Length + 1][];
 
-            int insertPos = 0;
+            //Заполняем заголовок
+            result[0] = new char[Alphabet.Length + 1];
+            int insertPos = 1;
+            foreach (var symbol in Alphabet)
+            {
+                result[0][insertPos] = symbol;
+                insertPos++;
+            }
+
+            //Заполняем остальные строки
+            insertPos = 1;
             foreach(var symbol in Alphabet)
             {
                 //Явный косяк!!! Так делать нельзя!!!
-                char[] alphabetFromPos = EncryptTableGenerator.GenerateAlphabetFromPos(symbol, this);
+                char[] alphabetFromPos = EncryptTableGenerator.GenerateAlphabetFromPosPlusOne(symbol, this);
                 result[insertPos] = alphabetFromPos;
                 insertPos++;
             }

@@ -18,9 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="StreamVigenereEncryption\Cryptographer\" />
     <Folder Include="StreamVigenereEncryption\Decryptor\" />
-    <Folder Include="StreamVigenereEncryption\Encryptor\" />
   </ItemGroup>
 
 </Project>
