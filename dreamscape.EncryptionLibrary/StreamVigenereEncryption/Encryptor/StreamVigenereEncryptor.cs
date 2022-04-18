@@ -1,6 +1,5 @@
-﻿using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
-using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Helpers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.StreamVigenereEncryption.Encryptor
 {
@@ -12,120 +11,84 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.StreamVigenereEncrypti
 
         public string Encrypt(string original, string key)
         {
-            string msg = "";
-            for (int i = 0; i < original.Length; i++)
-            {
-                if (original[i] != ' ')
-                {
-                    msg = msg + original[i];
-                }
-            }
+            //Убираем ненужные пробелы
+            string message = original.Trim();
 
             //Строка шифрования для Виженера
-            string autokey = key + msg;
+            string fullKey = key + message;
             //Длина ключа
-            int countKey = autokey.Length;
+            int keyLength = fullKey.Length;
             //Длина сообщения
-            int countMsg = msg.Length;
+            int messageLength = message.Length;
 
-            int countLines;
-
-            // Проверка количества строк (если последняя строка неполная - то берём 2
-            // 1-строка ключ, и последняя строка будет утеряна из-за целочисленного деления,
-            // иначе, если последняя строка будет полной, то добавляем только одну строку для ключа)
-            if ((countMsg % countKey) != 0)
-            {
-                countLines = countMsg / countKey + 2;
-            }
-            else
-            {
-                countLines = countMsg / countKey + 1;
-            }
-
-            //Таблица шифрования Виженера
-            char[,] keyAndMsg = new char[countLines, countKey];
+            //Таблица шифрования (сопоставляем строки)
+            char[,] encryptionTable = new char[2, keyLength];
 
             //цикл для ввода ключа в массив
-            for (int j = 0; j < countKey; j++)
+            for (int x = 0; x < keyLength; x++)
             {
-                keyAndMsg[0, j] = autokey[j];
+                encryptionTable[0, x] = fullKey[x];
             }
 
-            //цикл для вывода сообщения в виде массива
-            //j начинается с "1", поскольку нулевой строкой будет служить ключ
-            int SymbNumb = 0; // SymbNumb - индекс символа в первоначальном сообщении
-            for (int i = 1; i < countLines; i++)
+            //Записываем сообщение в 1 строку, до конца
+            for (int x = 0; x < keyLength; x++)
             {
-                for (int j = 0; j < countKey; j++)
+                if (x < messageLength)
                 {
-                    if (SymbNumb < countMsg)        //проверка на наличие символа (касается последней строки)
-                    {
-                        keyAndMsg[i, j] = msg[SymbNumb];
-                    }
-                    else
-                    {
-                        keyAndMsg[i, j] = ' ';
-                    }
-                    SymbNumb++;
+                    encryptionTable[1, x] = message[x];
+                }
+                else
+                {
+                    encryptionTable[1, x] = ' ';
                 }
             }
 
-            //Переходим к шифрованию - дешифрованию
-
-            //Шифрование Виженера
-
-            char[,] Cipher = keyAndMsg;
-            for (int j = 0; j < countKey; j++)
+            //Генерим таблицу Виженера
+            char[,] vigenereTable = encryptionTable;
+            for (int x = 0; x < keyLength; x++)
             {
-                int Step = 0;
+                int posInAlphabet = 0;
+                for (int y = 0; y < (ALPHABET.Length); y++)
+                {
+                    if (fullKey[x] == ALPHABET[y])
+                    {
+                        posInAlphabet = y;
+                    }
+                }
+
+                int indexInAlphabet = 0;
                 for (int k = 0; k < (ALPHABET.Length); k++)
                 {
-                    if (autokey[j] == ALPHABET[k])
+                    if (vigenereTable[1, x] == ALPHABET[k])
                     {
-                        Step = k;
+                        indexInAlphabet = k;
                     }
                 }
 
-                for (int i = 1; i < countLines; i++)
+                //Если заходим за алфавит - начинаем заново
+                if ((posInAlphabet + indexInAlphabet) > 31)
                 {
-                    int LetterIndex = 0;
-                    for (int k = 0; k < (ALPHABET.Length); k++)
+                    vigenereTable[1, x] = ALPHABET[posInAlphabet + indexInAlphabet - 32];
+                }
+                else
+                {
+                    if (vigenereTable[1, x] != ' ')
                     {
-                        if (Cipher[i, j] == ALPHABET[k])
-                        {
-                            LetterIndex = k;
-                        }
+                        vigenereTable[1, x] = ALPHABET[posInAlphabet + indexInAlphabet];
                     }
-                    if ((Step + LetterIndex) > 31)
-                    {
-                        Cipher[i, j] = ALPHABET[Step + LetterIndex - 32];
-                    }
-                    else
-                    {
-                        if (Cipher[i, j] != ' ')
-                        {
-                            Cipher[i, j] = ALPHABET[Step + LetterIndex];
-                        }
-                    }
-
                 }
             }
 
-            List<char> encResult = new List<char>(countKey);
+            List<char> encResult = new List<char>(keyLength);
 
-            for (int i = 0; i < countLines; i++)
+            for (int x = 0; x < keyLength; x++)
             {
-                for (int j = 0; j < countKey; j++)
-                {
-                    if (i == 1)
-                        encResult.Add(Cipher[i, j]);
-                }
+                encResult.Add(vigenereTable[1, x]);
             }
 
             string vigenereEncryptionResult = new string(encResult.ToArray());
 
             return vigenereEncryptionResult;
-
         }
     }
 }

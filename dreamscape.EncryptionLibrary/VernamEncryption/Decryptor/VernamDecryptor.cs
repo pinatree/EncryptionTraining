@@ -29,9 +29,7 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.VernamEncryption.Decry
                         if ((encrypted[i].Equals(ALPHABET[j])) & (key[i].Equals(ALPHABET[kj])))
                         {
                             decryptedIntArr[i] = int_cipher_vernam[i] ^ kj;
-                            //deciphermessage[i] = ALPHABET[int_deciphermessage[i]];
                             decrypted = decrypted + ALPHABET[decryptedIntArr[i]];
-                            //Console.Write(deciphermessage[i]);
                         }
                     }
                 }

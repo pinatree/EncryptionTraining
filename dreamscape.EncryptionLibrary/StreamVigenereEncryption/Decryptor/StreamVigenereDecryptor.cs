@@ -1,7 +1,5 @@
-﻿using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
-using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Helpers;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.StreamVigenereEncryption.Decryptor
 {
@@ -12,150 +10,73 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.StreamVigenereEncrypti
 
         public string Decrypt(string original, string key)
         {
+            //Убираем ненужные пробелы
             original = original.Trim();
 
-            string autokey = key + original;
+            string fullKey = key + original;
 
             //Длина ключа
-            int countKey = autokey.Length;
+            int keyLength = fullKey.Length;
             //Длина сообщения
-            int countMsg = original.Length;
+            int messageLength = original.Length;
 
-            int countLines;
-
-            //Фиг пойми что
-            // Проверка количества строк (если последняя строка неполная - то берём 2
-            // 1-строка ключ, и последняя строка будет утеряна из-за целочисленного деления,
-            // иначе, если последняя строка будет полной, то добавляем только одну строку для ключа)
-            if ((countMsg % countKey) != 0)
-            {
-                countLines = countMsg / countKey + 2;
-            }
-            else
-            {
-                countLines = countMsg / countKey + 1;
-            }
-
-            char[,] DeCipher = new char[countLines, countKey];
-
-            //Генерим таблицу дешифровки Виженера
-            //for (int j = 0; j < countKey; j++)
-            //{
-            //    int Step = 0;
-            //    for (int k = 0; k < (ALPHABET.Length); k++)
-            //    {
-            //        if (key[j] == ALPHABET[k])
-            //        {
-            //            Step = k;
-            //        }
-            //    }
-
-            //    for (int i = 1; i < countLines; i++)
-            //    {
-            //        int LetterIndex = 0;
-            //        for (int k = 0; k < (ALPHABET.Length); k++)
-            //        {
-            //            if (DeCipher[i, j] == ALPHABET[k])
-            //            {
-            //                LetterIndex = k;
-            //            }
-            //        }
-            //        if ((LetterIndex - Step) < 0)
-            //        {
-            //            if (DeCipher[i, j] != ' ')
-            //            {
-            //                DeCipher[i, j] = ALPHABET[LetterIndex - Step + 32];
-            //            }
-            //        }
-            //        else
-            //        {
-            //            if (DeCipher[i, j] != ' ')
-            //            {
-            //                DeCipher[i, j] = ALPHABET[LetterIndex - Step];
-            //            }
-            //        }
-            //        key = key + DeCipher[i, j];
-            //        DeCipher[0, j] = key[j];
-
-            //    }
-            //}
+            //Таблица дешифровки
+            char[,] decryptionTable = new char[2, keyLength];
 
             string decipherkey = key;
 
             //Указываем первый символ, для старта дешифрования
-            DeCipher[0, 0] = decipherkey[0];
+            decryptionTable[0, 0] = decipherkey[0];
 
-            //Заполняем зачем-то звездочками. Может, убрать это?
-            for (int j = 1; j < countKey; j++)
+            for (int x = 0; x < keyLength; x++)
             {
-                DeCipher[0, j] = '*';
+                if (x < original.Length)
+                    decryptionTable[1, x] = original[x];
+                else
+                    decryptionTable[1, x] = ' ';
             }
 
-            for (int i = 1; i < countLines; i++)
+            for (int x = 0; x < keyLength; x++)
             {
-                for (int j = 0; j < countKey; j++)
+                int posInAlphabet = 0;
+                for (int k = 0; k < ALPHABET.Length; k++)
                 {
-                    if (j < original.Length)
-                        DeCipher[i, j] = original[j];
-                    else
-                        DeCipher[i, j] = ' ';
+                    if (decipherkey[x] == ALPHABET[k])
+                    {
+                        posInAlphabet = k;
+                    }
                 }
+
+                int indexInAlphabet = 0;
+                for (int k = 0; k < ALPHABET.Length; k++)
+                {
+                    if (decryptionTable[1, x] == ALPHABET[k])
+                    {
+                        indexInAlphabet = k;
+                    }
+                }
+                if ((indexInAlphabet - posInAlphabet) < 0)
+                {
+                    if (decryptionTable[1, x] != ' ')
+                    {
+                        decryptionTable[1, x] = ALPHABET[indexInAlphabet - posInAlphabet + 32];
+                    }
+                }
+                else
+                {
+                    if (decryptionTable[1, x] != ' ')
+                    {
+                        decryptionTable[1, x] = ALPHABET[indexInAlphabet - posInAlphabet];
+                    }
+                }
+                decipherkey = decipherkey + decryptionTable[1, x];
+                decryptionTable[0, x] = decipherkey[x];
             }
 
-            for (int j = 0; j < countKey; j++)
+            List<char> decResult = new List<char>(keyLength);
+            for (int x = 0; x < keyLength; x++)
             {
-                int Step = 0;
-                for (int k = 0; k < (ALPHABET.Length); k++)
-                {
-                    if (decipherkey[j] == ALPHABET[k])
-                    {
-                        Step = k;
-                    }
-                }
-
-                for (int i = 1; i < countLines; i++)
-                {
-                    int LetterIndex = 0;
-                    for (int k = 0; k < (ALPHABET.Length); k++)
-                    {
-                        if (DeCipher[i, j] == ALPHABET[k])
-                        {
-                            LetterIndex = k;
-                        }
-                    }
-                    if ((LetterIndex - Step) < 0)
-                    {
-                        if (DeCipher[i, j] != ' ')
-                        {
-                            DeCipher[i, j] = ALPHABET[LetterIndex - Step + 32];
-                        }
-                    }
-                    else
-                    {
-                        if (DeCipher[i, j] != ' ')
-                        {
-                            DeCipher[i, j] = ALPHABET[LetterIndex - Step];
-                        }
-                    }
-                    decipherkey = decipherkey + DeCipher[i, j];
-                    DeCipher[0, j] = decipherkey[j];
-
-                }
-            }
-
-
-            Console.WriteLine("Результат дешифрования (первый набор символов-ключ)");
-
-            List<char> decResult = new List<char>(countKey);
-
-            for (int i = 0; i < countLines; i++)
-            {
-                for (int j = 0; j < countKey; j++)
-                {
-                    if (i == 1)
-                        decResult.Add(DeCipher[i, j]);
-                }
-                Console.Write(" ");
+                decResult.Add(decryptionTable[1, x]);
             }
 
             //Достаем дешифрованное сообщение

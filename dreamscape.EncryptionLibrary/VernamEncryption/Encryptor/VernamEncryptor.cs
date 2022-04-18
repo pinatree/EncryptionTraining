@@ -11,19 +11,18 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.VernamEncryption.Encry
         {
             Random random = new Random();
 
-            int[] int_message_Vernam = new int[original.Length];
+            int[] messageIntSymbols = new int[original.Length];
             char[] key_vernam = new char[original.Length];
             int[] index_letter_key_vernam = new int[original.Length];
             char[] cipher_vernam = new char[original.Length];
             int[] int_cipher_vernam = new int[original.Length];
 
             string result_key = "";
-            //Одноразовый ключ - как его блин, отсюда достать?
             for (int i = 0; i < original.Length; i++)
             {
                 index_letter_key_vernam[i] = random.Next(0, 32);
                 key_vernam[i] = ALPHABET[index_letter_key_vernam[i]];
-                int_message_Vernam[i] = original[i];
+                messageIntSymbols[i] = original[i];
                 result_key = result_key + key_vernam[i];
             }
 

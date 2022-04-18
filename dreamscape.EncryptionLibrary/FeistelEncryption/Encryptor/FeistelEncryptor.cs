@@ -1,5 +1,4 @@
 ﻿using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
-using System;
 using dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Helpers;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Encryptor
@@ -12,147 +11,130 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Encr
             int keylength = key.Length;
 
             //Ключ в виде массива символов
-            char[] char_key = new char[keylength];
-
-            //ключ в виде массива чисел???
-            int[] int_key = new int[keylength];
+            char[] keySymbols = new char[keylength];
+            //Ключ в виде массива чисел
+            int[] keyIntCodes = new int[keylength];
 
             int msglength = -1;
-            char[] char_message = null;
-            int[] int_message = null;
+            //Сообщение в виде массива символов
+            char[] messageSymbols;
+            //Сообщение в виде массива чисел
+            int[] messageIntCodes;
 
-            //Если длина сообщения нечетная, то добавляем 1 к длине сообщения (чтобы могли распарсить)
+            //Шифр фейстеля работает с 2 половинами. Если длина сообщения нечетная,
+            //то добавляем 1 к длине сообщения
             if (original.Length % 2 == 1)
             {
                 msglength = original.Length + 1;
-                char_message = new char[msglength];
-                int_message = new int[msglength];
+                messageSymbols = new char[msglength];
+                messageIntCodes = new int[msglength];
 
-                //Докидываем точку, чтобы было четное
-                char_message[msglength - 1] = '.';
+                //Докидываем пробел для четности
+                messageSymbols[msglength - 1] = ' ';
             }
             else
             {
                 msglength = original.Length;
-                char_message = new char[msglength];
-                int_message = new int[msglength];
+                messageSymbols = new char[msglength];
+                messageIntCodes = new int[msglength];
             }
-
-
-            //Обрабатываем
 
             //Левая часть сообщения
-            char[] char_message_left = new char[msglength / 2];
-            int[] int_message_left = new int[msglength / 2];
+            char[] messageLeftSymbols = new char[msglength / 2];
+            int[] messageLeftIntCodes = new int[msglength / 2];
 
             //Правая часть сообщения
-            char[] char_message_right = new char[msglength / 2];
-            int[] int_message_right = new int[msglength / 2];
+            char[] messageRightSymbols = new char[msglength / 2];
+            int[] messageRightIntCodes = new int[msglength / 2];
 
-            //Преобразуем сообщение в массивы
-            Console.WriteLine("Сообщение в двоичном виде");
-            for (int i = 0; i < original.Length; i++)
+            //Записываем сообщение в массивы
+            for (int x = 0; x < original.Length; x++)
             {
-                char_message[i] = original[i];
-                int_message[i] = char_message[i];
-
-                Console.Write(Convert.ToString(int_message[i], 2) + " ");
+                messageSymbols[x] = original[x];
+                messageIntCodes[x] = original[x];
             }
 
-            //Преобразуем ключ в массивы
-            Console.WriteLine();
-            Console.WriteLine("Ключ в двоичном виде");
-            for (int j = 0; j < keylength; j++)
+            //Записываем ключ в массивы
+            for (int x = 0; x < keylength; x++)
             {
-                char_key[j] = key[j];
-                int_key[j] = char_key[j];
-
-                Console.Write(Convert.ToString(int_key[j], 2) + " ");
+                keySymbols[x] = key[x];
+                keyIntCodes[x] = key[x];
             }
-            Console.WriteLine();
 
             //Заполнение левой части
-            for (int i = 0; i < msglength / 2; i++)
+            for (int x = 0; x < msglength / 2; x++)
             {
-                char_message_left[i] = char_message[i];
-                int_message_left[i] = char_message_left[i];
+                messageLeftSymbols[x] = messageSymbols[x];
+                messageLeftIntCodes[x] = messageSymbols[x];
             }
 
             //Заполнение правой части
-            for (int i = 0; i < msglength / 2; i++)
+            for (int x = 0; x < msglength / 2; x++)
             {
-                char_message_right[i] = char_message[i + (msglength / 2)];
-                int_message_right[i] = char_message[i + (msglength / 2)];
+                messageRightSymbols[x] = messageSymbols[x + (msglength / 2)];
+                messageRightIntCodes[x] = messageSymbols[x + (msglength / 2)];
             }
 
-            //ок, верим, что тут все было сделано правильно
-            //Console.Write(char_message_left);
-            //Console.WriteLine(char_message_right);
-
             //Массивы размерностью в половину сообщения
-            int[] int_temp = new int[msglength / 2];
-            char[] temp = new char[msglength / 2];
-
-
-            Console.WriteLine();
-            Console.WriteLine("Шифрование");
+            int[] halfIntCodes = new int[msglength / 2];
+            char[] halfSymbols = new char[msglength / 2];
 
             //Проходимся всей длине ключа
-            for (int j = 0; j < keylength; j++)
+            for (int x = 0; x < keylength; x++)
             {
                 //Текущий символ ключа
-                int int_keys_letter = key[j];
+                int currentKeySymbol = key[x];
 
-                int count = 0;
+                //Считаем записанные символы
+                int resultCount = 0;
 
                 //Первую половину сообщения в буффер
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
-                    temp[i] = char_message_left[i];
-                    int_temp[i] = int_message_left[i];
+                    halfSymbols[y] = messageLeftSymbols[y];
+                    halfIntCodes[y] = messageLeftIntCodes[y];
                 }
 
                 //Цикл до конца 1 половины. Шифруем левую половину по правой
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
                     //Если этот символ - последний
-                    if (count == (msglength / 2 - 1))
+                    if (resultCount == (msglength / 2 - 1))
                     {
                         //^ - это XOR
-                        int_message_left[i] = int_message_left[i] ^ int_keys_letter;
-                        int_message_left[i] = int_message_right[i] ^ int_message_left[i];
+                        messageLeftIntCodes[y] = messageLeftIntCodes[y] ^ currentKeySymbol;
+                        messageLeftIntCodes[y] = messageRightIntCodes[y] ^ messageLeftIntCodes[y];
                     }
                     else
                     {
                         //^ - это XOR
-                        int_message_left[i] = int_message_left[i] ^ 0;
-                        int_message_left[i] = int_message_left[i] ^ int_message_right[i];
+                        messageLeftIntCodes[y] = messageLeftIntCodes[y] ^ 0;
+                        messageLeftIntCodes[y] = messageLeftIntCodes[y] ^ messageRightIntCodes[y];
                     }
-                    char_message_left[i] = (char)int_message_left[i];
-                    count++;
+                    messageLeftSymbols[y] = (char)messageLeftIntCodes[y];
+                    resultCount++;
                 }
 
                 //Кодируем правую часть сообщения
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
-                    char_message_right[i] = temp[i];
-                    int_message_right[i] = int_temp[i];
+                    messageRightSymbols[y] = halfSymbols[y];
+                    messageRightIntCodes[y] = halfIntCodes[y];
                 }
 
                 //Записываем заширофванное сообщение в результат
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
-                    char_message[i] = char_message_left[i];
-                    char_message[i + (msglength / 2)] = char_message_right[i];
-                    int_message[i] = int_message_left[i];
-                    int_message[i + (msglength / 2)] = int_message_right[i];
+                    messageSymbols[y] = messageLeftSymbols[y];
+                    messageSymbols[y + (msglength / 2)] = messageRightSymbols[y];
+                    messageIntCodes[y] = messageLeftIntCodes[y];
+                    messageIntCodes[y + (msglength / 2)] = messageRightIntCodes[y];
                 }
-                Console.Write(char_message_left);
-                Console.WriteLine(char_message_right);
-                Console.WriteLine();
             }
 
-            return DataSerializer.SerializeToString<char[]>(char_message);
+            //Зашифрованные данные хранятся в бинарном виде, поэтому
+            //сериализуем массив в строку
+            return DataSerializer.SerializeToString(messageSymbols);
         }
     }
 }

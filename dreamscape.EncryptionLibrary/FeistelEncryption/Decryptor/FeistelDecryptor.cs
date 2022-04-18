@@ -1,10 +1,5 @@
 ﻿using dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Helpers;
 using dreamscape.EncryptionTraining.EncryptionLibrary.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Decryptor
 {
@@ -16,112 +11,76 @@ namespace dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Decr
             int keylength = key.Length;
 
             //Ключ в виде массива символов
-            char[] char_key = new char[keylength];
+            char[] keySymbols = new char[keylength];
+            //Ключ в виде массива чисел
+            int[] keyIntCodes = new int[keylength];
 
-            //ключ в виде массива чисел???
-            int[] int_key = new int[keylength];
+            char[] messageSymbols = DataSerializer.DeserializeFromString<char[]>(encrypted);
+            int[] messageIntCodes = new int[messageSymbols.Length];
+            int msglength = messageSymbols.Length;
 
-            //int msglength = -1;
-            //char[] char_message = null;
-
-            char[] char_message = DataSerializer.DeserializeFromString<char[]>(encrypted);
-
-            int[] int_message = new int[char_message.Length];
-
-            int msglength = char_message.Length;
-            for(int x = 0; x < char_message.Length; x++)
+            for(int x = 0; x < messageSymbols.Length; x++)
             {
-                int_message[x] = char_message[x];
-            }
-            
-            ////Если длина сообщения нечетная, то добавляем 1 к длине сообщения (чтобы могли распарсить)
-            //if (encrypted.Length % 2 == 1)
-            //{
-            //    msglength = encrypted.Length + 1;
-            //    char_message = new char[msglength];
-            //    int_message = new int[msglength];
-            //    char_message[msglength - 1] = '.';
-            //}
-            //else
-            //{
-            //    msglength = encrypted.Length;
-            //    char_message = new char[msglength];
-            //    int_message = new int[msglength];
-            //}
-
-            char[] char_message_left = new char[msglength / 2];
-            char[] char_message_right = new char[msglength / 2];
-            int[] int_message_left = new int[msglength / 2];
-            int[] int_message_right = new int[msglength / 2];
-            int count = 0;
-
-            //Console.WriteLine("Зашифрованное сообщение в двоичном виде");
-            for (int i = 0; i < msglength; i++)
-            {
-                Console.Write(Convert.ToString(int_message[i], 2) + " ");
-
-            }
-            Console.WriteLine();
-
-
-            for (int i = 0; i < msglength / 2; i++)
-            {
-                char_message_left[i] = char_message[i];
-                int_message_left[i] = char_message_left[i];
-                char_message_right[i] = char_message[i + (msglength / 2)];
-                int_message_right[i] = char_message_right[i];
+                messageIntCodes[x] = messageSymbols[x];
             }
 
-            int[] int_temp = new int[msglength / 2];
-            char[] temp = new char[msglength / 2];
+            char[] messageLeftSymbols = new char[msglength / 2];
+            char[] messageRightSymbols = new char[msglength / 2];
+            int[] messageLeftIntCodes = new int[msglength / 2];
+            int[] messageRightIntCodes = new int[msglength / 2];
 
-            for (int j = keylength - 1; j >= 0; j--)
+            for (int x = 0; x < msglength / 2; x++)
             {
+                messageLeftSymbols[x] = messageSymbols[x];
+                messageLeftIntCodes[x] = messageLeftSymbols[x];
+                messageRightSymbols[x] = messageSymbols[x + (msglength / 2)];
+                messageRightIntCodes[x] = messageRightSymbols[x];
+            }
 
-                int int_keys_letter = key[j];
-                count = 0;
+            int[] halfIntCodes = new int[msglength / 2];
+            char[] halfSymbols = new char[msglength / 2];
 
+            for (int x = keylength - 1; x >= 0; x--)
+            {
+                int int_keys_letter = key[x];
+                int resultCount = 0;
 
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
-                    if (count == (msglength / 2 - 1))
+                    if (resultCount == (msglength / 2 - 1))
                     {
-                        int_message_left[i] = int_message_left[i] ^ int_keys_letter;
-                        int_message_left[i] = int_message_right[i] ^ int_message_left[i];
-
+                        messageLeftIntCodes[y] = messageLeftIntCodes[y] ^ int_keys_letter;
+                        messageLeftIntCodes[y] = messageRightIntCodes[y] ^ messageLeftIntCodes[y];
                     }
                     else
                     {
-                        int_message_left[i] = int_message_left[i] ^ 0;
-                        int_message_left[i] = int_message_right[i] ^ int_message_left[i];
-
+                        messageLeftIntCodes[y] = messageLeftIntCodes[y] ^ 0;
+                        messageLeftIntCodes[y] = messageRightIntCodes[y] ^ messageLeftIntCodes[y];
                     }
-                    char_message_left[i] = (char)int_message_left[i];
-                    count++;
+                    messageLeftSymbols[y] = (char)messageLeftIntCodes[y];
+                    resultCount++;
                 }
 
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
-                    temp[i] = char_message_right[i];
-                    int_temp[i] = int_message_right[i];
-                    char_message_right[i] = char_message_left[i];
-                    int_message_right[i] = int_message_left[i];
-                    char_message_left[i] = temp[i];
-                    int_message_left[i] = int_temp[i];
-
+                    halfSymbols[y] = messageRightSymbols[y];
+                    halfIntCodes[y] = messageRightIntCodes[y];
+                    messageRightSymbols[y] = messageLeftSymbols[y];
+                    messageRightIntCodes[y] = messageLeftIntCodes[y];
+                    messageLeftSymbols[y] = halfSymbols[y];
+                    messageLeftIntCodes[y] = halfIntCodes[y];
                 }
 
-                for (int i = 0; i < msglength / 2; i++)
+                for (int y = 0; y < msglength / 2; y++)
                 {
-                    char_message[i] = char_message_left[i];
-                    char_message[i + (msglength / 2)] = char_message_right[i];
-                    int_message[i] = int_message_left[i];
-                    int_message[i + (msglength / 2)] = int_message_right[i];
+                    messageSymbols[y] = messageLeftSymbols[y];
+                    messageSymbols[y + (msglength / 2)] = messageRightSymbols[y];
+                    messageIntCodes[y] = messageLeftIntCodes[y];
+                    messageIntCodes[y + (msglength / 2)] = messageRightIntCodes[y];
                 }
             }
 
-            return new string(char_message);
-
+            return new string(messageSymbols);
         }
     }
 }

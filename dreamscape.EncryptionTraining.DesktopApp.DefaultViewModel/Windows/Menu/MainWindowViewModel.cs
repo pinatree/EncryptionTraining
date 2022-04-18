@@ -7,6 +7,8 @@ using dreamscape.EncryptionTraining.DesktopApp.IViewModel.Windows.Menu;
 using dreamscape.EncryptionTraining.EncryptionLibrary.TranspositionEncryption;
 using dreamscape.EncryptionTraining.EncryptionLibrary.ViginereEncryption.Cryptographer;
 using dreamscape.EncryptionTraining.EncryptionLibrary.StreamVigenereEncryption.Cryptographer;
+using dreamscape.EncryptionTraining.EncryptionLibrary.VernamEncryption.Cryptographer;
+using dreamscape.EncryptionTraining.EncryptionLibrary.FeistelEncryption.Cryptographer;
 
 namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
 {
@@ -79,11 +81,22 @@ namespace dreamscape.EncryptionTraining.DesktopApp.DefaultViewModel.Windows.Menu
                                     "",
                                     SetSelectedEncryption),
 
-                new EncryptionInfo("3. Поточный шифр Виженера",
+                new EncryptionInfo("3.1 Поточный шифр Виженера",
                                     new StreamVigenereCryptographer(),
                                     "Поточный шифр— это симметричный шифр, в котором каждый символ открытого текста преобразуется в символ шифрованного текста в " +
                                     "зависимости не только от используемого ключа, но и от его расположения в потоке открытого текста. ",
                                     SetSelectedEncryption),
+
+                new EncryptionInfo("3.2 Шифр Вернама",
+                                    new VernamCryptographer(),
+                                    "",
+                                    SetSelectedEncryption),
+
+                new EncryptionInfo("4 Шифр Фейстеля",
+                                    new FeistelCryptographer(),
+                                    "",
+                                    SetSelectedEncryption),
+
             };
 
             EncryptCommand = new RelayCommand(Encrypt);
